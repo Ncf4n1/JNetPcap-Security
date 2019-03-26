@@ -37,37 +37,37 @@ public class ScannerFinder {
                 Http http = new Http();
 
                 //Check for both a tcp and ip connection
-                if (packet.hasHeader(ip)) {
+                if (packet.hasHeader(ip) && packet.hasHeader(tcp)) {
                     //Convert the source IP bytes to a string
                     String ipAddress = FormatUtils.ip(ip.source());
-                    if (packet.hasHeader(tcp)) {
-                        //Check if syn packet
-                        //If syn flag is true and ack is false
-                        if (tcp.flags_SYN() == true && tcp.flags_ACK() == false){
-                            //Check if the ip is already in the hash
-                            Integer count = sentSyn.get(ipAddress);
-                            //If it doesn't exist, put it into the table with a count of 1 for the current packet
-                            if (count == null) {
-                                sentSyn.put(ipAddress, 1);
-                            }
-                            //If it does exist, increment the count by one for the current packet
-                            else {
-                                sentSyn.put(ipAddress, count + 1);
-                            }
+
+                    //Check if syn packet
+                    //If syn flag is true and ack is false
+                    if (tcp.flags_SYN() == true && tcp.flags_ACK() == false){
+                        //Check if the ip is already in the hash
+                        Integer count = sentSyn.get(ipAddress);
+                        //If it doesn't exist, put it into the table with a count of 1 for the current packet
+                        if (count == null) {
+                            sentSyn.put(ipAddress, 1);
                         }
-                        //Check if SYN ACK packet
-                        //If syn flag and ack flag are true
-                        else if (tcp.flags_SYN() == true && tcp.flags_ACK() == true) {
-                            //Check if the ip is already in the hash
-                            Integer count = recSynAck.get(ipAddress);
-                            //If it doesn't exist, put it into the table with a count of 1 for the current packet
-                            if (count == null) {
-                                recSynAck.put(ipAddress, 1);
-                            }
-                            //If it does exist, increment the count by one for the current packet
-                            else {
-                                recSynAck.put(ipAddress, count + 1);
-                            }
+                        //If it does exist, increment the count by one for the current packet
+                        else {
+                            sentSyn.put(ipAddress, count + 1);
+                        }
+                    }
+
+                    //Check if SYN ACK packet
+                    //If syn flag and ack flag are true
+                    else if (tcp.flags_SYN() == true && tcp.flags_ACK() == true) {
+                        //Check if the ip is already in the hash
+                        Integer count = recSynAck.get(ipAddress);
+                        //If it doesn't exist, put it into the table with a count of 1 for the current packet
+                        if (count == null) {
+                            recSynAck.put(ipAddress, 1);
+                        }
+                        //If it does exist, increment the count by one for the current packet
+                        else {
+                            recSynAck.put(ipAddress, count + 1);
                         }
                     }
                 }

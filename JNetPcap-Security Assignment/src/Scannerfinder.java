@@ -96,17 +96,15 @@ public class ScannerFinder {
         writer.write("Team Members: Glen Johnson, Lizzy Hamaoka, Logan Vining\n");
         writer.write("\n");
         writer.write("\n");
-        writer.write("\n");
 
         //Go through each ip in the sentSyn table
         for (String ip : sentSyn.keySet()) {
             //Check if that IP never received a SYN-ACK
-            if (recSynAck.get(ip) == null)
-                continue;
-            //Check if that IP sent 3 x as many SYN as SYN-ACK
-            else if (sentSyn.get(ip) >= (3 * recSynAck.get(ip)))
+            //And check if that IP sent 3 x as many SYN as SYN-ACK
+            if (recSynAck.get(ip) != null && sentSyn.get(ip) >= (3 * recSynAck.get(ip))) {
                 writer.write(ip + "\n");
-                System.out.println(ip);
+                System.out.println(ip + ": " + sentSyn.get(ip) + ", " + recSynAck.get(ip));
+            }
         }
 
         writer.close();
